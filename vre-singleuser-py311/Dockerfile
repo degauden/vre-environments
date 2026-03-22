@@ -9,6 +9,7 @@ RUN python -m pip install --upgrade pip
 
 USER $NB_UID
 
+
 RUN conda install -y -n base mamba \
     && mamba install -y -c conda-forge python-gfal2 \
         gfal2 \
