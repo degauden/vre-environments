@@ -7,7 +7,7 @@ LABEL org.label-schema.build-date=$BUILD_DATE
 
 RUN python -m pip install --upgrade pip
 
-USER $NB_UID
+USER root
 
 
 RUN conda install -y -n base mamba \
@@ -52,8 +52,6 @@ RUN git clone https://github.com/vre-hub/zenodo-jupyterlab-extension.git \
 # vre-summer-25 might break OpenAPI spec. But there is no other way of building REANA due to
 #  lower jsonchema<4 pin
 RUN python -m pip install git+https://github.com/garciagenrique/reana-client.git@vre-summer-25
-
-USER root
 
 RUN apt-get update && \
     apt-get install -y wget gnupg ca-certificates build-essential curl voms-clients-java software-properties-common && \
