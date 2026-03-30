@@ -3,6 +3,8 @@
 
 import os
 import json
+import shutil
+from pathlib import Path
 
 HOME = '/home/jovyan'
 
@@ -168,7 +170,35 @@ def write_ipython_config():
     config_file = open(file_path, 'w')
     config_file.write(json.dumps(config_json, indent=2))
     config_file.close()    
-    
+
+
+def copy_skel_to_home(skel_dir="/etc/skel", home_dir=None, overwrite=False):
+    skel_path = Path(skel_dir)
+    home_path = Path(home_dir) if home_dir else Path.home()
+
+    if not skel_path.exists():
+        raise FileNotFoundError(f"{skel_path} does not exist.")
+
+    for item in skel_path.iterdir():
+        src = item
+        dst = home_path / item.name
+
+        if src.is_dir():
+            if dst.exists():
+                if overwrite:
+                    shutil.rmtree(dst)
+                else:
+                    continue
+                shutil.copytree(src, dst)
+        else:
+            if dst.exists() and not overwrite:
+                continue
+            shutil.copy2(src, dst)
+
+def write_bash_config():
+    copy_skel_to_home()
+
 if __name__ == '__main__':
     write_jupyterlab_config()
     write_ipython_config()
+    write_bash_config()
